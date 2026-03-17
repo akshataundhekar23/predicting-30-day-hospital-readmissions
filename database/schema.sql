@@ -1,0 +1,112 @@
+
+PRAGMA foreign_keys = ON;
+
+-- 1. Patients Master Table
+CREATE TABLE IF NOT EXISTS patients (
+    Id TEXT PRIMARY KEY,
+    BIRTHDATE DATE,
+    DEATHDATE DATE,
+    GENDER TEXT,
+    RACE TEXT,
+    ETHNICITY TEXT,
+    COUNTY TEXT,
+    HEALTHCARE_EXPENSES REAL,
+    HEALTHCARE_COVERAGE REAL
+);
+
+-- 2. Encounters Fact Table
+CREATE TABLE IF NOT EXISTS encounters (
+    Id TEXT PRIMARY KEY,
+    START DATETIME,
+    STOP DATETIME,
+    PATIENT TEXT,
+    ORGANIZATION TEXT,
+    PROVIDER TEXT,
+    PAYER TEXT,
+    ENCOUNTERCLASS TEXT,
+    CODE TEXT,
+    DESCRIPTION TEXT,
+    BASE_ENCOUNTER_COST REAL,
+    TOTAL_CLAIM_COST REAL,
+    PAYER_COVERAGE REAL,
+    REASONCODE TEXT,
+    FOREIGN KEY(PATIENT) REFERENCES patients(Id)
+);
+
+-- 3. Conditions Table
+CREATE TABLE IF NOT EXISTS conditions (
+    START DATE,
+    STOP DATE,
+    PATIENT TEXT,
+    ENCOUNTER TEXT,
+    CODE TEXT,
+    DESCRIPTION TEXT,
+    FOREIGN KEY(PATIENT) REFERENCES patients(Id),
+    FOREIGN KEY(ENCOUNTER) REFERENCES encounters(Id)
+);
+
+-- 4. Observations Table
+CREATE TABLE IF NOT EXISTS observations (
+    DATE DATETIME,
+    PATIENT TEXT,
+    ENCOUNTER TEXT,
+    CODE TEXT,
+    DESCRIPTION TEXT,
+    VALUE TEXT,
+    UNITS TEXT,
+    TYPE TEXT,
+    FOREIGN KEY(PATIENT) REFERENCES patients(Id),
+    FOREIGN KEY(ENCOUNTER) REFERENCES encounters(Id)
+);
+
+-- 5. Medications Table
+CREATE TABLE IF NOT EXISTS medications (
+    START DATE,
+    STOP DATE,
+    PATIENT TEXT,
+    PAYER TEXT,
+    ENCOUNTER TEXT,
+    CODE TEXT,
+    DESCRIPTION TEXT,
+    BASE_COST REAL,
+    PAYER_COVERAGE REAL,
+    DISPENSES INTEGER,
+    TOTALCOST REAL,
+    REASONCODE TEXT,
+    FOREIGN KEY(PATIENT) REFERENCES patients(Id),
+    FOREIGN KEY(ENCOUNTER) REFERENCES encounters(Id)
+);
+
+-- 6. Predictions Storage Table
+CREATE TABLE IF NOT EXISTS readmission_predictions (
+    Prediction_Id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ENCOUNTER_ID TEXT,
+    PATIENT_ID TEXT,
+    DISCHARGE_DATE DATETIME,
+    PREDICTED_READMISSION_CLASS INTEGER,
+    READMISSION_RISK_SCORE REAL,
+    MODEL_VERSION TEXT,
+    TIMESTAMP DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY(ENCOUNTER_ID) REFERENCES encounters(Id),
+    FOREIGN KEY(PATIENT_ID) REFERENCES patients(Id)
+);
+
+-- Indexes for performance
+CREATE INDEX IF NOT EXISTS idx_encounters_patient ON encounters(PATIENT);
+CREATE INDEX IF NOT EXISTS idx_encounters_start ON encounters(START);
+CREATE INDEX IF NOT EXISTS idx_encounters_stop ON encounters(STOP);
+
+CREATE INDEX IF NOT EXISTS idx_conditions_patient ON conditions(PATIENT);
+CREATE INDEX IF NOT EXISTS idx_conditions_encounter ON conditions(ENCOUNTER);
+CREATE INDEX IF NOT EXISTS idx_conditions_start ON conditions(START);
+
+CREATE INDEX IF NOT EXISTS idx_observations_patient ON observations(PATIENT);
+CREATE INDEX IF NOT EXISTS idx_observations_encounter ON observations(ENCOUNTER);
+CREATE INDEX IF NOT EXISTS idx_observations_date ON observations(DATE);
+
+CREATE INDEX IF NOT EXISTS idx_medications_patient ON medications(PATIENT);
+CREATE INDEX IF NOT EXISTS idx_medications_encounter ON medications(ENCOUNTER);
+CREATE INDEX IF NOT EXISTS idx_medications_start ON medications(START);
+
+CREATE INDEX IF NOT EXISTS idx_predictions_encounter ON readmission_predictions(ENCOUNTER_ID);
+CREATE INDEX IF NOT EXISTS idx_predictions_patient ON readmission_predictions(PATIENT_ID);

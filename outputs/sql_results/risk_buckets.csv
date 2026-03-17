@@ -1,0 +1,4 @@
+Risk_Bucket,Encounter_Count,Avg_Risk_Score
+High Risk,716,0.9256
+Medium Risk,659,0.6491
+Low Risk,2521,0.1039

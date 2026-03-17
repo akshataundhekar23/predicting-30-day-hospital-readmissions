@@ -1,0 +1,13 @@
+COUNTY,Total_Encounters,Avg_Risk_Score,Predicted_Readmit_Rate
+Bristol County,737,0.5993,0.6486
+Hampshire County,149,0.4305,0.5101
+Plymouth County,392,0.383,0.449
+Hampden County,321,0.3665,0.3801
+Worcester County,323,0.3493,0.3715
+Franklin County,103,0.3409,0.2718
+Barnstable County,191,0.3239,0.3822
+Norfolk County,436,0.3154,0.3188
+Berkshire County,47,0.2274,0.1702
+Middlesex County,636,0.2046,0.1619
+Suffolk County,277,0.1749,0.1155
+Essex County,284,0.1487,0.0704
