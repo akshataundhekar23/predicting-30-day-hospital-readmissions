@@ -113,5 +113,3 @@ Highlights which encounter types are more prone to readmission.
 ![Encounter Class Risk](outputs/figures/encounter_class_risk.png)
 
 ---
-
-## 📂 Project Structure
